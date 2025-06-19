@@ -27,6 +27,7 @@ async function authRoutes(fastify, options) {
 
   fastify.post("/register", async (request, reply) => {
     const { email, username, password } = request.body;
+    // console.log(request.body);
 
     if (!email?.trim() || !username?.trim() || !password?.trim()) {
       return reply
@@ -38,8 +39,9 @@ async function authRoutes(fastify, options) {
       .select()
       .from(users)
       .where(eq(users.email, email));
+    // console.log(existing);
     if (existing.length > 0) {
-      return res.status(400).send({ error: "Email already registered" });
+      return reply.status(400).send({ error: "Email already registered" });
     }
 
     const hashed = await hash(password, 10);
@@ -56,6 +58,7 @@ async function authRoutes(fastify, options) {
 
   fastify.post("/login", async (request, reply) => {
     const { email, password } = request.body;
+    // console.log(request.body);
 
     if (!email?.trim() || !password?.trim()) {
       return reply
@@ -83,7 +86,7 @@ async function authRoutes(fastify, options) {
         httpOnly: true,
         sameSite: "lax",
         secure: false,
-        maxAge: 60 * 60 * 24, // 1 day
+        maxAge: 60 * 60 * 24,
       });
 
       reply.status(201).send({ message: "Logged in" });

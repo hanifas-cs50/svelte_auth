@@ -18,6 +18,9 @@ export type Log = {
 	timestamp: string;
 };
 
+const backendUrl = `${env.PUBLIC_BACKEND_URL}-5003.app.github.dev/ms3`;
+// const backendUrl = `${env.PUBLIC_BACKEND_URL}:5003/ms3`;
+
 const initLogs = writable<RawLog[]>([]);
 export const logs = derived<Writable<RawLog[]>, Log[]>(initLogs, ($initLogs) =>
 	$initLogs.map((log) => ({
@@ -33,7 +36,7 @@ export const logs = derived<Writable<RawLog[]>, Log[]>(initLogs, ($initLogs) =>
 
 export async function initializeLogs() {
 	try {
-		const res2 = await fetch(`${env.PUBLIC_BACKEND_URL}:5003/ms3/logs`);
+		const res2 = await fetch(`${backendUrl}/logs`);
 		if (!res2.ok) throw new Error('Failed to fetch logs');
 
 		const data2 = await res2.json();
@@ -46,7 +49,7 @@ export async function initializeLogs() {
 
 export async function getLog(id: number) {
 	try {
-		const res = await fetch(`${env.PUBLIC_BACKEND_URL}:5003/ms3/log/${id}`);
+		const res = await fetch(`${backendUrl}/log/${id}`);
 		if (!res.ok) throw new Error('Failed to fetch log');
 
 		return await res.json();

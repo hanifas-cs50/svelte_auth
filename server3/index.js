@@ -6,8 +6,9 @@ const { fastifyCookie: cookie } = require("@fastify/cookie");
 const app = Fastify({ trustProxy: true });
 
 app.register(cors, {
-  origin: "http://192.168.0.68:5173",
+  origin: "https://bookish-guide-v5pw5vq9vxr2wjj4-5173.app.github.dev",
   methods: ["GET", "POST"],
+  credentials: true
 });
 
 app.register(cookie, {

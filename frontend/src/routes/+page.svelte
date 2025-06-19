@@ -66,14 +66,14 @@
 	>
 		{loading ? 'Logging in...' : 'Login'}
 	</button>
-	<a
+	<!-- <a
 		class="mt-1 rounded bg-zinc-500/90 py-2 text-center font-medium text-white hover:bg-zinc-500 {loading
 			? 'opacity-50'
 			: ''}"
 		href={loading ? '#' : `/`}
 	>
 		Back
-	</a>
+	</a> -->
 </form>
 
 <p class="mt-4 text-center font-medium">

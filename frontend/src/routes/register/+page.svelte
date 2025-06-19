@@ -21,8 +21,8 @@
 			loading = false;
 			return;
 		}
-		
-    if (password !== confirmPassword) {
+
+		if (password !== confirmPassword) {
 			error = 'Password does not match';
 			loading = false;
 			return;
@@ -30,8 +30,8 @@
 
 		try {
 			await register(email, username, password);
-      await login(email, password);
-      goto("/cars");
+			await login(email, password);
+			goto('/cars');
 		} catch (err) {
 			error = (err as Error).message;
 		} finally {

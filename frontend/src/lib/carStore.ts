@@ -8,10 +8,13 @@ export type Car = {
 	price: number;
 };
 
-export const cars = writable<Car[]>([]);
+const MS1_URL = `${env.PUBLIC_BACKEND_URL}-5001.app.github.dev/ms1`;
+// const MS1_URL = `${env.PUBLIC_BACKEND_URL}:5001/ms1`;
 
-const MS1_URL = `${env.PUBLIC_BACKEND_URL}:5001/ms1`;
-const MS2_URL = `${env.PUBLIC_BACKEND_URL}:5002/ms2`;
+const MS1_URL = `${env.PUBLIC_BACKEND_URL}-5002.app.github.dev/ms2`;
+// const MS2_URL = `${env.PUBLIC_BACKEND_URL}:5002/ms2`;
+
+export const cars = writable<Car[]>([]);
 
 async function apiFetch(url: string, options?: RequestInit) {
 	const res = await fetch(url, options);
