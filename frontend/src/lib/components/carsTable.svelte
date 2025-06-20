@@ -3,6 +3,8 @@
 	import { initializeLogs } from '$lib/logStore';
 	import { onMount } from 'svelte';
 
+  let { data } = $props();
+
 	let fetchError = $state('');
 	let fetchLoading = $state(true);
 
@@ -59,9 +61,9 @@
 		<thead>
 			<tr>
 				<th class="w-14 border p-2">No.</th>
-        <th class="w-20 border p-2">Cars ID</th>
-				<th class="border p-2">Model</th>
-				<th class="border p-2">Brand</th>
+        <th class="w-20 border p-2">Car ID</th>
+				<th class="w-36 border p-2">Model</th>
+				<th class="w-36 border p-2">Brand</th>
 				<th class="border p-2">Price</th>
 				<th class="border p-2" colspan="2">Action</th>
 			</tr>
@@ -78,7 +80,7 @@
 						<a
 							class="flex px-4 py-2 font-medium text-white
 								{deletingId === id ? 'bg-zinc-500' : 'bg-blue-500/90 hover:bg-blue-500'}"
-							href={deletingId === id ? '#' : `/update/${id}`}
+							href={deletingId === id ? '#' : `/cars/update/${id}`}
 						>
 							Update
 						</a>

@@ -1,14 +1,15 @@
 import { env } from '$env/dynamic/public';
 import { browser } from '$app/environment';
 import { writable } from 'svelte/store';
+import { redirect } from '@sveltejs/kit';
 
 type User = {
 	id: number;
 	username: string;
 };
 
-const backendUrl = `${env.PUBLIC_BACKEND_URL}-5004.app.github.dev/user`;
-// const backendUrl = `${env.PUBLIC_BACKEND_URL}:5004/user`;
+// const backendUrl = `${env.PUBLIC_BACKEND_URL}-5004.app.github.dev/user`;
+const backendUrl = `${env.PUBLIC_BACKEND_URL}:5004/user`;
 
 export const loggedUser = writable<User | null>(null);
 
@@ -44,6 +45,7 @@ export async function logout() {
 		console.error('Logout failed:', err);
 	}
 }
+
 export async function login(email: String, password: String) {
 	try {
 		const res = await fetch(`${backendUrl}/login`, {

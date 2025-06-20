@@ -1,23 +1,44 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { addCar } from '$lib/carStore';
 	import { goto } from '$app/navigation';
-	import { browser } from '$app/environment';
+	import { page } from '$app/state';
+	import { editCar, getCar, type Car } from '$lib/carStore';
+	import { onMount } from 'svelte';
 
-  let loggedUser = null;
-
-	onMount(() => {
-    if (browser) {
-      loggedUser = localStorage.getItem("user") || null;
-      if (!loggedUser) goto('/');
-    }
-	});
-
+  let { data } = $props();
+	let car = $state<Car | undefined>(undefined);
 	let error = $state('');
 	let loading = $state(false);
 
+	const rawId = parseInt(page.params.id, 10);
+	const id = !isNaN(rawId) ? rawId : undefined;
+
+	const fetchCar = async () => {
+		if (id === undefined) {
+			error = 'Invalid car ID!';
+			return;
+		}
+
+		error = '';
+		loading = true;
+
+		try {
+			car = await getCar(id);
+		} catch (err) {
+			error = (err as Error).message;
+		} finally {
+			loading = false;
+		}
+	};
+
+	onMount(fetchCar);
+
 	async function onSubmit(e: SubmitEvent) {
 		e.preventDefault();
+		if (car === undefined || id === undefined) {
+			error = 'Invalid car ID! (Why did you do that?)';
+			return;
+		}
+
 		error = '';
 		loading = true;
 
@@ -33,8 +54,8 @@
 		}
 
 		try {
-			await addCar(model, brand, price);
-			goto('/');
+			await editCar(id, model, brand, price);
+			goto('/cars');
 		} catch (err) {
 			error = (err as Error).message;
 		} finally {
@@ -43,7 +64,7 @@
 	}
 </script>
 
-<h1 class="mb-4 text-center text-2xl font-bold">Add</h1>
+<h1 class="mb-4 text-center text-2xl font-bold">Update</h1>
 
 {#if error}
 	<div class="mb-4 rounded bg-red-200 p-2 text-red-800">{error}</div>
@@ -57,6 +78,7 @@
 			type="text"
 			id="model"
 			name="model"
+			defaultValue={car ? car.model : ''}
 			autocomplete="off"
 			required
 		/>
@@ -68,6 +90,7 @@
 			type="text"
 			id="brand"
 			name="brand"
+			defaultValue={car ? car.brand : ''}
 			autocomplete="off"
 			required
 		/>
@@ -78,25 +101,26 @@
 			class="rounded border-2 border-zinc-500/60 px-2 py-1 font-medium text-zinc-800 outline-none hover:border-zinc-500 focus:border-zinc-500"
 			type="number"
 			id="price"
+			defaultValue={car ? car.price : ''}
 			name="price"
-			min="0"
+			min="1"
 			max="99999"
 			required
 		/>
 	</div>
 
 	<button
-		class="mt-4 cursor-pointer rounded bg-blue-500/90 py-2 font-medium text-white hover:bg-blue-500 disabled:bg-zinc-500"
 		type="submit"
-		disabled={loading}
+		class="mt-4 cursor-pointer rounded bg-blue-500/90 py-2 font-medium text-white hover:bg-blue-500 disabled:bg-zinc-500"
+		disabled={car === undefined || loading}
 	>
-		{loading ? 'Adding...' : 'Add'}
+		{loading ? 'Updating...' : 'Update'}
 	</button>
 	<a
+		href={loading ? '#' : `/cars`}
 		class="mt-1 rounded bg-zinc-500/90 py-2 text-center font-medium text-white hover:bg-zinc-500 {loading
 			? 'opacity-50'
 			: ''}"
-		href={loading ? '#' : `/`}
 	>
 		Back
 	</a>

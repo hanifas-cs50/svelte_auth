@@ -1,5 +1,5 @@
 const { db, users } = require("../db/index");
-const { eq } = require("drizzle-orm");
+const { inArray, eq } = require("drizzle-orm");
 const { compare, hash } = require("bcrypt");
 
 async function authRoutes(fastify, options) {
@@ -87,6 +87,7 @@ async function authRoutes(fastify, options) {
         sameSite: "lax",
         secure: false,
         maxAge: 60 * 60 * 24,
+        signed: true
       });
 
       reply.status(201).send({ message: "Logged in" });

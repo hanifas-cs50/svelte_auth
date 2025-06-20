@@ -8,8 +8,14 @@ async function carsRoutes(fastify, options) {
     const ip = request.ip;
     const userAgent = request.headers["user-agent"];
     const { brand, model, price } = request.body;
+    const session = request.unsignCookie(request.cookies.session);
 
-    if ( !brand?.trim() || !model?.trim() || price === undefined || isNaN(price)) {
+    if (!session.valid) {
+      return reply.status(401).send({ error: "Unauthorized" });
+    }
+    const user_id = parseInt(session.value);
+
+    if (!brand?.trim() || !model?.trim() || price === undefined || isNaN(price)) {
       return reply
         .status(400)
         .send({ error: "Brand, model, and price are required." });
@@ -24,11 +30,11 @@ async function carsRoutes(fastify, options) {
       const newCar = { id: result.insertedId, brand, model, price };
 
       try {
-        await logToServer({ ip, userAgent }, "POST", newCar);
+        await logToServer(user_id, { ip, userAgent }, "POST", newCar);
       } catch (logErr) {
         console.error("Logging failed: ", logErr);
         await db.delete(cars).where(eq(cars.id, newCar.id));
-        return reply.status(500).send({ error: "Failed to log transaction." });
+      return reply.status(500).send({ error: "Failed to log transaction." });
       }
 
       reply.status(201).send({ message: "Car created", value: newCar });
@@ -43,16 +49,34 @@ async function carsRoutes(fastify, options) {
     const userAgent = request.headers["user-agent"];
     const { id } = request.params;
     const { brand, model, price } = request.body;
+    const session = request.unsignCookie(request.cookies.session);
 
-    if ( !brand?.trim() || !model?.trim() || price === undefined || isNaN(price)) {
+    if (!session.valid) {
+      return reply.status(401).send({ error: "Unauthorized" });
+    }
+    const user_id = parseInt(session.value);
+
+    if (
+      user_id === undefined ||
+      isNaN(user_id) ||
+      !brand?.trim() ||
+      !model?.trim() ||
+      price === undefined ||
+      isNaN(price)
+    ) {
       return reply
         .status(400)
-        .send({ error: "Brand, model, and price are required." });
+        .send({ error: "User ID, brand, model, and price are required." });
     }
 
     try {
       try {
-        await logToServer({ ip, userAgent }, "PUT", { id, model, brand, price });
+        await logToServer(user_id, { ip, userAgent }, "PUT", {
+          id,
+          model,
+          brand,
+          price,
+        });
       } catch (logErr) {
         console.error("Logging failed: ", logErr);
         return reply.status(500).send({ error: "Failed to log transaction" });
@@ -78,10 +102,20 @@ async function carsRoutes(fastify, options) {
     const ip = request.ip;
     const userAgent = request.headers["user-agent"];
     const { id } = request.params;
+    const session = request.unsignCookie(request.cookies.session);
+
+    if (!session.valid) {
+      return reply.status(401).send({ error: "Unauthorized" });
+    }
+    const user_id = parseInt(session.value);
+
+    if (user_id === undefined || isNaN(user_id)) {
+      return reply.status(400).send({ error: "User ID is required." });
+    }
 
     try {
       try {
-        await logToServer({ ip, userAgent }, "DELETE", { id });
+        await logToServer(user_id, { ip, userAgent }, "DELETE", { id });
       } catch (logErr) {
         console.error("Logging failed: ", logErr);
         return reply.status(500).send({ error: "Failed to log transaction" });
@@ -92,7 +126,7 @@ async function carsRoutes(fastify, options) {
       if (result.rowCount === 0) {
         return reply.status(404).send({ error: "Car not found" });
       }
-      
+
       reply.status(201).send({ message: "Car deleted" });
     } catch (err) {
       console.error("DB delete failed: ", err);

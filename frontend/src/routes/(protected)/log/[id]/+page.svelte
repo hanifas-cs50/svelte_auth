@@ -22,6 +22,7 @@
 			log = raw
 				? {
 						...raw,
+		        user: JSON.parse(raw.user),
             source: JSON.parse(raw.source),
 						data: JSON.parse(raw.data),
 						timestamp: new Date(raw.timestamp).toLocaleString('id-ID', {
@@ -48,6 +49,13 @@
 		<h4 class="font-medium">Car ID:</h4>
 		<p class="rounded bg-zinc-200/60 px-2 py-1 font-medium text-zinc-800 hover:bg-zinc-200">
 			{log ? log.data.id : ''}
+		</p>
+	</div>
+	<div class="mt-3 grid gap-1">
+		<label class="font-medium" for="user">User: </label>
+		<p class="rounded bg-zinc-200/60 px-2 py-1 font-medium text-zinc-800 hover:bg-zinc-200">
+			<span class="block">Username: {log ? log.user.username : ''}</span>
+			<span class="block">Email: {log ? log.user.email : ''}</span>
 		</p>
 	</div>
 	<div class="mt-3 grid gap-1">

@@ -4,6 +4,7 @@ import type { Car } from './carStore';
 
 type RawLog = {
 	id: number;
+  user: string;
 	source: string;
 	action: string;
 	data: string;
@@ -12,19 +13,21 @@ type RawLog = {
 
 export type Log = {
 	id: number;
+  user: { username: string; email: string };
 	source: { userAgent: string; ip: string };
 	action: string;
 	data: Car;
 	timestamp: string;
 };
 
-const backendUrl = `${env.PUBLIC_BACKEND_URL}-5003.app.github.dev/ms3`;
-// const backendUrl = `${env.PUBLIC_BACKEND_URL}:5003/ms3`;
+// const backendUrl = `${env.PUBLIC_BACKEND_URL}-5003.app.github.dev/ms3`;
+const backendUrl = `${env.PUBLIC_BACKEND_URL}:5003/ms3`;
 
 const initLogs = writable<RawLog[]>([]);
 export const logs = derived<Writable<RawLog[]>, Log[]>(initLogs, ($initLogs) =>
 	$initLogs.map((log) => ({
 		...log,
+		user: JSON.parse(log.user),
 		source: JSON.parse(log.source),
 		data: JSON.parse(log.data),
 		timestamp: new Date(log.timestamp).toLocaleString('id-ID', {

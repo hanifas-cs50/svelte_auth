@@ -8,11 +8,11 @@ export type Car = {
 	price: number;
 };
 
-const MS1_URL = `${env.PUBLIC_BACKEND_URL}-5001.app.github.dev/ms1`;
-// const MS1_URL = `${env.PUBLIC_BACKEND_URL}:5001/ms1`;
+// const MS1_URL = `${env.PUBLIC_BACKEND_URL}-5001.app.github.dev/ms1`;
+const MS1_URL = `${env.PUBLIC_BACKEND_URL}:5001/ms1`;
 
-const MS1_URL = `${env.PUBLIC_BACKEND_URL}-5002.app.github.dev/ms2`;
-// const MS2_URL = `${env.PUBLIC_BACKEND_URL}:5002/ms2`;
+// const MS1_URL = `${env.PUBLIC_BACKEND_URL}-5002.app.github.dev/ms2`;
+const MS2_URL = `${env.PUBLIC_BACKEND_URL}:5002/ms2`;
 
 export const cars = writable<Car[]>([]);
 
@@ -50,10 +50,11 @@ export async function addCar(model: string, brand: string, price: number) {
 		const newCar = await apiFetch(`${MS2_URL}/cars`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
+			credentials: 'include',
 			body: JSON.stringify({ model, brand, price })
 		});
 
-    cars.update((list) => [...list, newCar.value]);
+		cars.update((list) => [...list, newCar.value]);
 	} catch (err) {
 		console.error('Error adding car: ', err);
 		throw new Error(`Error adding car: ${(err as Error).message}`);
@@ -65,11 +66,10 @@ export async function editCar(id: number, model: string, brand: string, price: n
 		const updatedCar = await apiFetch(`${MS2_URL}/cars/${id}`, {
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json' },
+			credentials: 'include',
 			body: JSON.stringify({ model, brand, price })
 		});
-		cars.update((list) =>
-			list.map((car) => (car.id === id ? updatedCar : car))
-		);
+		cars.update((list) => list.map((car) => (car.id === id ? updatedCar : car)));
 	} catch (err) {
 		console.error('Error updating car:', err);
 		throw new Error(`Error updating car: ${(err as Error).message}`);
@@ -78,7 +78,10 @@ export async function editCar(id: number, model: string, brand: string, price: n
 
 export async function deleteCar(id: number) {
 	try {
-		await apiFetch(`${MS2_URL}/cars/${id}`, { method: 'DELETE' });
+		await apiFetch(`${MS2_URL}/cars/${id}`, {
+			method: 'DELETE',
+			credentials: 'include'
+		});
 		cars.update((list) => list.filter((car) => car.id !== id));
 	} catch (err) {
 		console.error('Error deleting car: ', err);

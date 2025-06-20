@@ -9,15 +9,22 @@ async function logsRoutes(fastify, options) {
         .select()
         .from(logs)
         .orderBy(desc(logs.timestamp));
+
+      if (getLogs.length === 0) {
+        return reply.send([]);
+      }
+
       const userIds = [...new Set(getLogs.map((log) => log.user_id))];
 
       try {
         const users = await getUsers(userIds);
+        // console.log(users);
         const userMap = Object.fromEntries(users.map((u) => [u.id, u]));
-        const result = logs.map((log) => ({
+        const result = getLogs.map((log) => ({
           ...log,
-          user: userMap[log.user_id] || null,
+          user: JSON.stringify(userMap[log.user_id]),
         }));
+        // console.log(result);
         reply.send(result);
       } catch (userErr) {
         console.error("Get logs failed: ", userErr);
@@ -33,10 +40,7 @@ async function logsRoutes(fastify, options) {
     const { id } = request.params;
 
     try {
-      const [log] = await db
-        .select()
-        .from(logs)
-        .where(eq(logs.id, id));
+      const [log] = await db.select().from(logs).where(eq(logs.id, id));
       const userId = [log.user_id];
 
       if (!log) {
@@ -45,7 +49,7 @@ async function logsRoutes(fastify, options) {
 
       try {
         const [user] = await getUsers(userId);
-        const result = { ...log, user };
+        const result = { ...log, user: JSON.stringify(user) };
         reply.send(result);
       } catch (userErr) {
         console.error("Get log failed: ", userErr);
@@ -61,9 +65,7 @@ async function logsRoutes(fastify, options) {
     const { user_id, source, action, data, timestamp } = request.body;
 
     if (!user_id || !source || !action || !data || !timestamp) {
-      return reply
-        .status(400)
-        .send({ error: "All query are required." });
+      return reply.status(400).send({ error: "All query are required." });
     }
 
     try {

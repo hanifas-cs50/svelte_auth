@@ -1,6 +1,6 @@
 const fetch = require("node-fetch");
 
-async function logToServer(source, action, data) {
+async function logToServer(user_id, source, action, data) {
   try {
     await fetch("http://localhost:5003/ms3/log", {
       method: "POST",
@@ -8,6 +8,7 @@ async function logToServer(source, action, data) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
+        user_id,
         source,
         action,
         data,
