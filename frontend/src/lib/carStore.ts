@@ -2,7 +2,7 @@ import { env } from '$env/dynamic/public';
 import { writable } from 'svelte/store';
 
 export type Car = {
-	id: number;
+	uuid: string;
 	brand: string;
 	model: string;
 	price: number;
@@ -36,9 +36,9 @@ export async function initializeCars() {
 	}
 }
 
-export async function getCar(id: number) {
+export async function getCar(uuid: string) {
 	try {
-		return await apiFetch(`${MS1_URL}/car/${id}`);
+		return await apiFetch(`${MS1_URL}/car/${uuid}`);
 	} catch (err) {
 		console.error('Error loading car: ', err);
 		throw new Error(`Error loading car: ${(err as Error).message}`);
@@ -61,28 +61,28 @@ export async function addCar(model: string, brand: string, price: number) {
 	}
 }
 
-export async function editCar(id: number, model: string, brand: string, price: number) {
+export async function editCar(uuid: string, model: string, brand: string, price: number) {
 	try {
-		const updatedCar = await apiFetch(`${MS2_URL}/cars/${id}`, {
+		const updatedCar = await apiFetch(`${MS2_URL}/cars/${uuid}`, {
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json' },
 			credentials: 'include',
 			body: JSON.stringify({ model, brand, price })
 		});
-		cars.update((list) => list.map((car) => (car.id === id ? updatedCar : car)));
+		cars.update((list) => list.map((car) => (car.uuid === uuid ? updatedCar : car)));
 	} catch (err) {
 		console.error('Error updating car:', err);
 		throw new Error(`Error updating car: ${(err as Error).message}`);
 	}
 }
 
-export async function deleteCar(id: number) {
+export async function deleteCar(uuid: string) {
 	try {
-		await apiFetch(`${MS2_URL}/cars/${id}`, {
+		await apiFetch(`${MS2_URL}/cars/${uuid}`, {
 			method: 'DELETE',
 			credentials: 'include'
 		});
-		cars.update((list) => list.filter((car) => car.id !== id));
+		cars.update((list) => list.filter((car) => car.uuid !== uuid));
 	} catch (err) {
 		console.error('Error deleting car: ', err);
 		throw new Error(`Error deleting car: ${(err as Error).message}`);

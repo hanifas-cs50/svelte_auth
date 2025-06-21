@@ -48,7 +48,7 @@
 	<div class="grid gap-1">
 		<h4 class="font-medium">Car ID:</h4>
 		<p class="rounded bg-zinc-200/60 px-2 py-1 font-medium text-zinc-800 hover:bg-zinc-200">
-			{log ? log.data.id : ''}
+			{log ? log.data.uuid : ''}
 		</p>
 	</div>
 	<div class="mt-3 grid gap-1">
@@ -88,7 +88,7 @@
 		</div>
 	{/if}
 	<a
-		href="/"
+		href="/cars"
 		class="mt-4 rounded bg-zinc-500/90 py-2 text-center font-medium text-white hover:bg-zinc-500"
 	>
 		Back

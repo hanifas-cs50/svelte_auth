@@ -50,7 +50,7 @@
 			{#each $logs as { id, user, source, action, data, timestamp }, i (id)}
 				<tr>
 					<td class="border p-2">{i + 1}.</td>
-					<td class="border p-2">{data.id}</td>
+					<td class="border p-2">{data.uuid}</td>
 					<td class="border p-2">{user.username}</td>
 					<td class="border p-2">{getSourceType(source.userAgent)}</td>
 					<td class="border p-2">{action}</td>

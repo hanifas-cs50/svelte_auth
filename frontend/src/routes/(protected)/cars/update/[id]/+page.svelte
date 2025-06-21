@@ -9,11 +9,10 @@
 	let error = $state('');
 	let loading = $state(false);
 
-	const rawId = parseInt(page.params.id, 10);
-	const id = !isNaN(rawId) ? rawId : undefined;
+	const uuid = page.params.id;
 
 	const fetchCar = async () => {
-		if (id === undefined) {
+		if (uuid === undefined) {
 			error = 'Invalid car ID!';
 			return;
 		}
@@ -22,7 +21,7 @@
 		loading = true;
 
 		try {
-			car = await getCar(id);
+			car = await getCar(uuid);
 		} catch (err) {
 			error = (err as Error).message;
 		} finally {
@@ -34,7 +33,7 @@
 
 	async function onSubmit(e: SubmitEvent) {
 		e.preventDefault();
-		if (car === undefined || id === undefined) {
+		if (car === undefined || uuid === undefined) {
 			error = 'Invalid car ID! (Why did you do that?)';
 			return;
 		}
@@ -54,7 +53,7 @@
 		}
 
 		try {
-			await editCar(id, model, brand, price);
+			await editCar(uuid, model, brand, price);
 			goto('/cars');
 		} catch (err) {
 			error = (err as Error).message;

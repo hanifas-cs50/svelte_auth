@@ -3,13 +3,11 @@
 	import { initializeLogs } from '$lib/logStore';
 	import { onMount } from 'svelte';
 
-  let { data } = $props();
-
 	let fetchError = $state('');
 	let fetchLoading = $state(true);
 
 	let deleteError = $state('');
-	let deletingId: number | null = $state(null);
+	let deletingId: string | null = $state(null);
 
 	const fetchCars = async () => {
 		fetchError = '';
@@ -23,11 +21,11 @@
 		}
 	};
 
-	const onDelete = async (id: number) => {
+	const onDelete = async (uuid: string) => {
 		deleteError = '';
-		deletingId = id;
+		deletingId = uuid;
 		try {
-			await deleteCar(id);
+			await deleteCar(uuid);
       await initializeLogs();
 		} catch (err) {
 			deleteError = (err as Error).message;
@@ -69,18 +67,18 @@
 			</tr>
 		</thead>
 		<tbody class="text-center">
-			{#each $cars as { id, model, brand, price }, i (id)}
+			{#each $cars as { uuid, model, brand, price }, i (uuid)}
 				<tr>
 					<td class="border p-2">{i + 1}.</td>
-					<td class="border p-2">{id}</td>
+					<td class="border p-2">{uuid}</td>
 					<td class="border p-2">{model}</td>
 					<td class="border p-2">{brand}</td>
 					<td class="border p-2">{price}</td>
 					<td class="w-20 border">
 						<a
 							class="flex px-4 py-2 font-medium text-white
-								{deletingId === id ? 'bg-zinc-500' : 'bg-blue-500/90 hover:bg-blue-500'}"
-							href={deletingId === id ? '#' : `/cars/update/${id}`}
+								{deletingId === uuid ? 'bg-zinc-500' : 'bg-blue-500/90 hover:bg-blue-500'}"
+							href={deletingId === uuid ? '#' : `/cars/update/${uuid}`}
 						>
 							Update
 						</a>
@@ -89,8 +87,8 @@
 						<button
 							class="cursor-pointer bg-red-500/90 px-4 py-2 font-medium text-white hover:bg-red-500 disabled:bg-zinc-500"
 							type="button"
-							onclick={() => onDelete(id)}
-							disabled={deletingId === id}
+							onclick={() => onDelete(uuid)}
+							disabled={deletingId === uuid}
 						>
 							Delete
 						</button>
