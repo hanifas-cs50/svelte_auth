@@ -83,9 +83,9 @@ async function authRoutes(fastify, options) {
 
       reply.setCookie("session", result.id.toString(), {
         path: "/",
-        httpOnly: true,
-        sameSite: "lax",
-        secure: false,
+        httpOnly: true, // change to "false" when using github codespace
+        sameSite: "lax", // change to "none" when using github codespace
+        secure: false, // change to "true" when using github codespace
         maxAge: 60 * 60 * 24,
         signed: true
       });

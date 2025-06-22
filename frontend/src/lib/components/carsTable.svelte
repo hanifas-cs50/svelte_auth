@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { initializeCars, cars, deleteCar } from '$lib/carStore';
-	import { initializeLogs } from '$lib/logStore';
 	import { onMount } from 'svelte';
+	import { initializeLogs } from '$lib/logStore';
+	import { initializeCars, cars, deleteCar } from '$lib/carStore';
 
 	let fetchError = $state('');
 	let fetchLoading = $state(true);
@@ -46,7 +46,7 @@
 	<button
 		class="mb-4 w-full cursor-pointer font-medium text-blue-500/80 underline hover:text-blue-500"
 		type="button"
-		onclick={() => fetchCars()}
+		onclick={fetchCars}
 	>
 		Reload
 	</button>

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { getSourceType, initializeLogs, logs } from '$lib/logStore';
 	import { onMount } from 'svelte';
+	import { getSourceType, initializeLogs, logs } from '$lib/logStore';
 
 	let fetchError = $state('');
 	let fetchLoading = $state(true);
@@ -29,7 +29,7 @@
 	<button
 		class="w-full cursor-pointer font-medium text-blue-500/80 underline hover:text-blue-500"
 		type="button"
-		onclick={() => fetchLogs()}
+		onclick={fetchLogs}
 	>
 		Reload
 	</button>

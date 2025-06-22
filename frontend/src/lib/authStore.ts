@@ -1,15 +1,14 @@
 import { env } from '$env/dynamic/public';
 import { browser } from '$app/environment';
 import { writable } from 'svelte/store';
-import { redirect } from '@sveltejs/kit';
 
 type User = {
 	id: number;
 	username: string;
 };
 
-// const backendUrl = `${env.PUBLIC_BACKEND_URL}-5004.app.github.dev/user`;
-const backendUrl = `${env.PUBLIC_BACKEND_URL}:5004/user`;
+// const USER_URL = `${env.PUBLIC_BACKEND_URL}-5004.app.github.dev/user`;
+const USER_URL = `${env.PUBLIC_BACKEND_URL}:5004/user`;
 
 export const loggedUser = writable<User | null>(null);
 
@@ -17,7 +16,7 @@ export async function checkSession() {
 	if (!browser) return;
 
 	try {
-		const res = await fetch(`${backendUrl}/me`, {
+		const res = await fetch(`${USER_URL}/me`, {
 			credentials: 'include'
 		});
 
@@ -36,7 +35,7 @@ export async function checkSession() {
 
 export async function logout() {
 	try {
-		await fetch(`${backendUrl}/logout`, {
+		await fetch(`${USER_URL}/logout`, {
 			method: 'POST',
 			credentials: 'include'
 		});
@@ -48,7 +47,7 @@ export async function logout() {
 
 export async function login(email: String, password: String) {
 	try {
-		const res = await fetch(`${backendUrl}/login`, {
+		const res = await fetch(`${USER_URL}/login`, {
 			method: 'POST',
 			credentials: 'include',
 			headers: { 'Content-Type': 'application/json' },
@@ -66,7 +65,7 @@ export async function login(email: String, password: String) {
 
 export async function register(email: String, username: String, password: String) {
 	try {
-		await fetch(`${backendUrl}/register`, {
+		await fetch(`${USER_URL}/register`, {
 			method: 'POST',
 			credentials: 'include',
 			headers: { 'Content-Type': 'application/json' },

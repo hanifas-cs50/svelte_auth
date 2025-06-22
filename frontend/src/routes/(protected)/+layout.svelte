@@ -16,7 +16,7 @@
 	<div
 		class="m-4 flex h-14 items-center justify-between rounded bg-zinc-500/10 px-6 font-medium shadow-md"
 	>
-		<div>{data?.user.username}</div>
+		<div>{data.user.username}</div>
 
 		<div class="space-x-4">
 			<a

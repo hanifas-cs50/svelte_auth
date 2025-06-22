@@ -1,8 +1,11 @@
 const fetch = require("node-fetch");
 
+// const origin = "https://bookish-guide-v5pw5vq9vxr2wjj4-5003.app.github.dev";
+const origin = "http://192.168.0.68:5003";
+
 async function logToServer(user_id, source, action, data) {
   try {
-    await fetch("http://localhost:5003/ms3/log", {
+    await fetch(`${origin}/ms3/log`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,8 +1,11 @@
 const fetch = require("node-fetch");
 
+// const origin = "https://bookish-guide-v5pw5vq9vxr2wjj4-5004.app.github.dev";
+const origin = "http://192.168.0.68:5004";
+
 async function getUsers(userIds) {
   try {
-    const res = await fetch("http://localhost:5004/user/get", {
+    const res = await fetch(`${origin}/user/get`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
